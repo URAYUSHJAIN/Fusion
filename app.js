@@ -195,7 +195,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   gridDisplay.addEventListener("touchmove", (e) => {
     touchEndX = e.touches[0].clientX;
-    touchEndY = e.tches[0].clientY;
+    touchEndY = e.touches[0].clientY; // Fixed typo here
   });
 
   gridDisplay.addEventListener("touchend", () => {
@@ -205,11 +205,15 @@ document.addEventListener("DOMContentLoaded", () => {
   function handleSwipeGesture() {
     const diffX = touchEndX - touchStartX;
     const diffY = touchEndY - touchStartY;
+    const threshold = 30; // Minimum distance to trigger a swipe
 
-    if (Math.abs(diffX) > Math.abs(diffY)) {
+    if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > threshold) {
       if (diffX > 0) keyRight();
       else keyLeft();
-    } else {
+    } else if (
+      Math.abs(diffY) > Math.abs(diffX) &&
+      Math.abs(diffY) > threshold
+    ) {
       if (diffY > 0) keyDown();
       else keyUp();
     }
