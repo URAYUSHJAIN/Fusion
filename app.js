@@ -6,10 +6,15 @@ document.addEventListener("DOMContentLoaded", () => {
   let squares = [];
   let score = 0;
 
+  let touchStartX = 0;
+  let touchStartY = 0;
+  let touchEndX = 0;
+  let touchEndY = 0;
+
   function createBoard() {
     for (let i = 0; i < width * width; i++) {
       const square = document.createElement("div");
-      square.innerHTML = 0;
+      square.innerHTML = ""; // Leave the square empty initially
       gridDisplay.appendChild(square);
       squares.push(square);
     }
@@ -21,143 +26,130 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function generate() {
     const randomNumber = Math.floor(Math.random() * squares.length);
-    if (squares[randomNumber].innerHTML == 0) {
+    if (squares[randomNumber].innerHTML === "") {
+      // Check if it's empty
       squares[randomNumber].innerHTML = 2;
     } else {
       generate();
     }
   }
 
-  // Move tiles right
   function moveRight() {
     for (let i = 0; i < 16; i++) {
       if (i % 4 === 0) {
         let row = [
-          parseInt(squares[i].innerHTML),
-          parseInt(squares[i + 1].innerHTML),
-          parseInt(squares[i + 2].innerHTML),
-          parseInt(squares[i + 3].innerHTML),
+          parseInt(squares[i].innerHTML) || 0,
+          parseInt(squares[i + 1].innerHTML) || 0,
+          parseInt(squares[i + 2].innerHTML) || 0,
+          parseInt(squares[i + 3].innerHTML) || 0,
         ];
         let filteredRow = row.filter((num) => num);
         let missing = 4 - filteredRow.length;
-        let zeros = Array(missing).fill(0);
+        let zeros = Array(missing).fill("");
         let newRow = zeros.concat(filteredRow);
 
-        squares[i].innerHTML = newRow[0];
-        squares[i + 1].innerHTML = newRow[1];
-        squares[i + 2].innerHTML = newRow[2];
-        squares[i + 3].innerHTML = newRow[3];
+        squares[i].innerHTML = newRow[0] || "";
+        squares[i + 1].innerHTML = newRow[1] || "";
+        squares[i + 2].innerHTML = newRow[2] || "";
+        squares[i + 3].innerHTML = newRow[3] || "";
       }
     }
   }
 
-  // Move tiles left
   function moveLeft() {
     for (let i = 0; i < 16; i++) {
       if (i % 4 === 0) {
         let row = [
-          parseInt(squares[i].innerHTML),
-          parseInt(squares[i + 1].innerHTML),
-          parseInt(squares[i + 2].innerHTML),
-          parseInt(squares[i + 3].innerHTML),
+          parseInt(squares[i].innerHTML) || 0,
+          parseInt(squares[i + 1].innerHTML) || 0,
+          parseInt(squares[i + 2].innerHTML) || 0,
+          parseInt(squares[i + 3].innerHTML) || 0,
         ];
         let filteredRow = row.filter((num) => num);
         let missing = 4 - filteredRow.length;
-        let zeros = Array(missing).fill(0);
+        let zeros = Array(missing).fill("");
         let newRow = filteredRow.concat(zeros);
 
-        squares[i].innerHTML = newRow[0];
-        squares[i + 1].innerHTML = newRow[1];
-        squares[i + 2].innerHTML = newRow[2];
-        squares[i + 3].innerHTML = newRow[3];
+        squares[i].innerHTML = newRow[0] || "";
+        squares[i + 1].innerHTML = newRow[1] || "";
+        squares[i + 2].innerHTML = newRow[2] || "";
+        squares[i + 3].innerHTML = newRow[3] || "";
       }
     }
   }
 
-  // Move tiles up
   function moveUp() {
     for (let i = 0; i < 4; i++) {
       let column = [
-        parseInt(squares[i].innerHTML),
-        parseInt(squares[i + width].innerHTML),
-        parseInt(squares[i + width * 2].innerHTML),
-        parseInt(squares[i + width * 3].innerHTML),
+        parseInt(squares[i].innerHTML) || 0,
+        parseInt(squares[i + width].innerHTML) || 0,
+        parseInt(squares[i + width * 2].innerHTML) || 0,
+        parseInt(squares[i + width * 3].innerHTML) || 0,
       ];
       let filteredColumn = column.filter((num) => num);
       let missing = 4 - filteredColumn.length;
-      let zeros = Array(missing).fill(0);
+      let zeros = Array(missing).fill("");
       let newColumn = filteredColumn.concat(zeros);
 
-      squares[i].innerHTML = newColumn[0];
-      squares[i + width].innerHTML = newColumn[1];
-      squares[i + width * 2].innerHTML = newColumn[2];
-      squares[i + width * 3].innerHTML = newColumn[3];
+      squares[i].innerHTML = newColumn[0] || "";
+      squares[i + width].innerHTML = newColumn[1] || "";
+      squares[i + width * 2].innerHTML = newColumn[2] || "";
+      squares[i + width * 3].innerHTML = newColumn[3] || "";
     }
   }
 
-  // Move tiles down
   function moveDown() {
     for (let i = 0; i < 4; i++) {
       let column = [
-        parseInt(squares[i].innerHTML),
-        parseInt(squares[i + width].innerHTML),
-        parseInt(squares[i + width * 2].innerHTML),
-        parseInt(squares[i + width * 3].innerHTML),
+        parseInt(squares[i].innerHTML) || 0,
+        parseInt(squares[i + width].innerHTML) || 0,
+        parseInt(squares[i + width * 2].innerHTML) || 0,
+        parseInt(squares[i + width * 3].innerHTML) || 0,
       ];
       let filteredColumn = column.filter((num) => num);
       let missing = 4 - filteredColumn.length;
-      let zeros = Array(missing).fill(0);
+      let zeros = Array(missing).fill("");
       let newColumn = zeros.concat(filteredColumn);
 
-      squares[i].innerHTML = newColumn[0];
-      squares[i + width].innerHTML = newColumn[1];
-      squares[i + width * 2].innerHTML = newColumn[2];
-      squares[i + width * 3].innerHTML = newColumn[3];
+      squares[i].innerHTML = newColumn[0] || "";
+      squares[i + width].innerHTML = newColumn[1] || "";
+      squares[i + width * 2].innerHTML = newColumn[2] || "";
+      squares[i + width * 3].innerHTML = newColumn[3] || "";
     }
   }
 
-  // Combine rows
   function combineRow() {
     for (let i = 0; i < 15; i++) {
-      if (squares[i].innerHTML === squares[i + 1].innerHTML) {
+      if (
+        squares[i].innerHTML === squares[i + 1].innerHTML &&
+        squares[i].innerHTML !== ""
+      ) {
         let combinedTotal =
           parseInt(squares[i].innerHTML) + parseInt(squares[i + 1].innerHTML);
         squares[i].innerHTML = combinedTotal;
-        squares[i + 1].innerHTML = 0;
-        score += combinedTotal;
-        scoreDisplay.innerHTML = score;
+        squares[i + 1].innerHTML = ""; // Empty after combining
+        score += combinedTotal; // Update score after combining
+        scoreDisplay.innerHTML = score; // Update score on display
       }
     }
   }
 
-  // Combine columns
   function combineColumn() {
     for (let i = 0; i < 12; i++) {
-      if (squares[i].innerHTML === squares[i + width].innerHTML) {
+      if (
+        squares[i].innerHTML === squares[i + width].innerHTML &&
+        squares[i].innerHTML !== ""
+      ) {
         let combinedTotal =
           parseInt(squares[i].innerHTML) +
           parseInt(squares[i + width].innerHTML);
         squares[i].innerHTML = combinedTotal;
-        squares[i + width].innerHTML = 0;
-        score += combinedTotal;
-        scoreDisplay.innerHTML = score;
+        squares[i + width].innerHTML = ""; // Empty after combining
+        score += combinedTotal; // Update score after combining
+        scoreDisplay.innerHTML = score; // Update score on display
       }
     }
   }
-
-  function control(e) {
-    if (e.key === "ArrowLeft") {
-      keyLeft();
-    } else if (e.key === "ArrowRight") {
-      keyRight();
-    } else if (e.key === "ArrowUp") {
-      keyUp();
-    } else if (e.key === "ArrowDown") {
-      keyDown();
-    }
-  }
-
-  document.addEventListener("keydown", control);
 
   function keyRight() {
     moveRight();
@@ -187,29 +179,48 @@ document.addEventListener("DOMContentLoaded", () => {
     generate();
   }
 
-  function checkForWin() {
-    for (let i = 0; i < squares.length; i++) {
-      if (squares[i].innerHTML == 2048) {
-        resultDisplay.innerHTML = "You win 🎉🎉";
-        document.removeEventListener("keydown", control);
-      }
+  // Keyboard Controls
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "ArrowLeft") keyLeft();
+    if (e.key === "ArrowRight") keyRight();
+    if (e.key === "ArrowUp") keyUp();
+    if (e.key === "ArrowDown") keyDown();
+  });
+
+  // Touch Controls
+  gridDisplay.addEventListener("touchstart", (e) => {
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+  });
+
+  gridDisplay.addEventListener("touchmove", (e) => {
+    touchEndX = e.touches[0].clientX;
+    touchEndY = e.tches[0].clientY;
+  });
+
+  gridDisplay.addEventListener("touchend", () => {
+    handleSwipeGesture();
+  });
+
+  function handleSwipeGesture() {
+    const diffX = touchEndX - touchStartX;
+    const diffY = touchEndY - touchStartY;
+
+    if (Math.abs(diffX) > Math.abs(diffY)) {
+      if (diffX > 0) keyRight();
+      else keyLeft();
+    } else {
+      if (diffY > 0) keyDown();
+      else keyUp();
     }
   }
 
-  function checkForGameOver() {
-    let zeros = squares.filter((square) => square.innerHTML == 0).length;
-    if (zeros === 0) {
-      resultDisplay.innerHTML = "Game Over 😔";
-      document.removeEventListener("keydown", control);
-    }
-  }
-
-  function addColours() {
+  setInterval(() => {
     squares.forEach((square) => {
-      const value = parseInt(square.innerHTML);
+      const value = parseInt(square.innerHTML) || 0; // Default to 0 for empty cells
       square.style.backgroundColor =
         value === 0
-          ? "#afa192"
+          ? "#afa192" // If the value is empty (0)
           : value === 2
           ? "#eee4da"
           : value === 4
@@ -232,7 +243,5 @@ document.addEventListener("DOMContentLoaded", () => {
           ? "#edc53f"
           : "#edc22e";
     });
-  }
-
-  setInterval(addColours, 50);
+  }, 50);
 });

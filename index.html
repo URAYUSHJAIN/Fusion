@@ -20,5 +20,43 @@
     </p>
     <div class="grid"></div>
   </div>
+  <script>
+    // Protection Code Starts Here
+    document.addEventListener("contextmenu", (e) => {
+      e.preventDefault();
+      alert("Right-click is disabled to protect the code.");
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "F12") {
+        e.preventDefault();
+        alert("Inspecting the page is disabled.");
+      }
+
+      if (e.ctrlKey && e.shiftKey && e.key === "I") {
+        e.preventDefault();
+        alert("Inspecting the page is disabled.");
+      }
+
+      if (e.ctrlKey && e.shiftKey && e.key === "J") {
+        e.preventDefault();
+        alert("Inspecting the page is disabled.");
+      }
+
+      if (e.ctrlKey && e.key === "u") {
+        e.preventDefault();
+        alert("Viewing the page source is disabled.");
+      }
+    });
+
+    setInterval(() => {
+      const devtools = /./;
+      devtools.toString = () => "devtools";
+      if (console.log(devtools) === "devtools") {
+        alert("DevTools is open! Please close it.");
+        window.location.reload(); // Optional: Reload the page
+      }
+    }, 1000);
+  </script>
 </body>
 </html>
